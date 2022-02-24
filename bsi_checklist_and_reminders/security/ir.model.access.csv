@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_todo_checklist,access_todo_checklist,model_todo_checklist,base.group_user,1,1,1,1
+access_todo_checklist_line,access_todo_checklist_line,model_todo_checklist_line,base.group_user,1,1,1,1
+access_todo_checklist_tags,access_todo_checklist_tags,model_todo_checklist_tags,base.group_user,1,1,1,1

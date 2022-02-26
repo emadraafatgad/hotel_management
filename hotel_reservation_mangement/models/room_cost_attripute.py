@@ -18,7 +18,7 @@ class RoomCostAttribute(models.Model):
     note = fields.Char()
     price_ids = fields.One2many('cost.per.person', 'room_type_id', required=True)
     # remove this only for db
-    cost = fields.Integer(required=True)
+    cost = fields.Integer()
 
     meal_plan = fields.Selection([
         ('Soft Al Inclusive', 'Soft Al Inclusive'),
@@ -42,7 +42,7 @@ class RoomCostAttribute(models.Model):
         for rec in self:
             if rec.date_from and rec.date_to:
                 all_room_cost = self.env['room.cost.attribute'].search(
-                    [('hotel_id', '=', rec.hotel_id.id), ('room_type_id', '=', rec.room_type_id.id),
+                    [('id','!=',rec.id),('hotel_id', '=', rec.hotel_id.id), ('room_type_id', '=', rec.room_type_id.id),
                      ('rate_supplier', '=', rec.rate_supplier.id),
                      ('meal_plan', '=', rec.meal_plan),
                      '|', '&', ('date_from', '<=', rec.date_from), ('date_to', '>=', rec.date_from),

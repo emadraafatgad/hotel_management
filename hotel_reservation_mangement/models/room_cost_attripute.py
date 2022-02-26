@@ -37,20 +37,22 @@ class RoomCostAttribute(models.Model):
                 if rec.date_from > rec.date_to:
                     raise ValidationError(_('date from must be less than date to'))
 
-    @api.constrains('date_to', 'date_from','rate_supplier','meal_plan','hotel_id','room_type_id')
+    @api.constrains('date_to', 'date_from', 'rate_supplier', 'meal_plan', 'hotel_id', 'room_type_id')
     def condition_on_date_all_conditions(self):
         for rec in self:
             if rec.date_from and rec.date_to:
                 all_room_cost = self.env['room.cost.attribute'].search(
-                    [('id','!=',rec.id),('hotel_id', '=', rec.hotel_id.id), ('room_type_id', '=', rec.room_type_id.id),
+                    [('id', '!=', rec.id), ('hotel_id', '=', rec.hotel_id.id),
+                     ('room_type_id', '=', rec.room_type_id.id),
                      ('rate_supplier', '=', rec.rate_supplier.id),
                      ('meal_plan', '=', rec.meal_plan),
                      '|', '&', ('date_from', '>=', rec.date_from), ('date_to', '<=', rec.date_to),
                      '|', '&', ('date_from', '<=', rec.date_from), ('date_to', '>=', rec.date_from),
                      '&', ('date_from', '<=', rec.date_to), ('date_to', '>=', rec.date_to), ])
                 if all_room_cost:
-                    raise ValidationError("Dates overlapped, please make sure dates are correct " + str(all_room_cost.id) )
-                if len(rec.price_ids) > 0:
+                    raise ValidationError(
+                        "Dates overlapped, please make sure dates are correct " + str(all_room_cost.id))
+                if len(rec.price_ids) <= 0:
                     raise ValidationError('Please one add price Lines')
 
     @api.onchange('period_lead_id')

@@ -47,7 +47,8 @@ class RoomCostAttribute(models.Model):
                      ('meal_plan', '=', rec.meal_plan),
                      '|', '&', ('date_from', '<=', rec.date_from), ('date_to', '>=', rec.date_from),
                      '&', ('date_from', '<=', rec.date_to), ('date_from', '<=', rec.date_to), ])
-                raise ValidationError(all_room_cost)
+                if all_room_cost:
+                    raise ValidationError(all_room_cost)
                 for room in all_room_cost:
                     if rec.date_from > rec.date_to:
                         raise ValidationError(_('date from must be less than date to'))

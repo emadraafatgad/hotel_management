@@ -31,8 +31,7 @@
                         <field name="hotel_id"/>
                         <field name="room_type_id"/>
                         <field name="meal_plan"/>
-                        <field name="date_to"/>
-                        <field name="period_lead_id" />
+                        <field name="period_lead_id" invisible="1"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
                     </tree>
@@ -53,7 +52,7 @@
                                 <field name="meal_plan"/>
                             </group>
                             <group col="2">
-                                <field name="period_lead_id"/>
+                                <field name="period_lead_id" invisible="1"/>
                                 <field name="date_from"/>
                                 <newline/>
                                 <field name="date_to"/>

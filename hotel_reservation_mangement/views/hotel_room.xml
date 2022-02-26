@@ -93,7 +93,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="guests info">
+                            <page string="Occupancy">
                                 <group colsapn="12">
                                     <group col="2">
                                         <field name="maximum_adults"/>
@@ -108,7 +108,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="faicilities and aminites">
+                            <page string="faicilities and aminites" invisible="1">
                                 <group >
                                     <field name="facilities_ids" widget="many2many_checkboxes"/>
                                 </group>

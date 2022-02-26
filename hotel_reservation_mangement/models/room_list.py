@@ -20,11 +20,10 @@ class SplitRoom(models.Model):
     room_type = fields.Many2one('hotel.room.type', domain="[('hotel_id','=',hotel_id)]")
     meal_plan = fields.Selection([
         ('Soft Al Inclusive', 'Soft Al Inclusive'),
-        ('Al Inclusive', 'Al Inclusive'),
         ('Half Board (HB)', 'Half Board (HB)'),
         ('Full Board (FB)', 'Full Board (FB)'),
-        ('Board (B)', 'Board (B)'),
-    ])
+
+    ], required=True, tracking=True)
 
     reservation_id = fields.Many2one('hotel.reservation.management')
     arrival_date = fields.Date(track_visibility='onchange', string="Check in")
@@ -36,7 +35,7 @@ class SplitRoom(models.Model):
     @api.depends('avr_price')
     def _calc_average_price(self):
         for rec in self:
-            print(rec.nights_price,"in AVR")
+            # print(rec.nights_price,"in AVR")
             rec.update({'nights_price': rec.avr_price * rec.nights_quantity})
 
     @api.onchange('children','person_per_room')
@@ -73,18 +72,19 @@ class SplitRoom(models.Model):
     @api.depends('departure_date')
     def _set_departure_date(self):
         for date in self:
+            if date.arrival_date == False or date.departure_date == False:
+                raise ValidationError('Please Add Departure Date and Arrival Date First')
             if date.arrival_date:
                 arrival_date = date.arrival_date
                 departure_date = date.departure_date
-                print(departure_date)
-                print(departure_date - arrival_date)
+                # print(departure_date)
+                # print(departure_date - arrival_date)
                 nights_q = (departure_date - arrival_date).days
                 date.update({'nights_quantity': nights_q})
-                print(nights_q,"DDDDDDDDDDD")
 
     @api.onchange('room_type', 'person_per_room', 'meal_plan','nights_quantity', 'room_quantity')
     def calc_room_price_for_total_guests(self):
-        print("i am in cal function")
+        # print("i am in cal function")
         for rec in self:
             arrival_price = 0
             departure_price = 0
@@ -97,37 +97,37 @@ class SplitRoom(models.Model):
                 ])
 
                 for room_cost_id in room_cost_ids:
-                    print(room_cost_ids,room_cost_ids)
-                    print(rec.arrival_date,room_cost_id.date_from)
+                    # print(room_cost_ids,room_cost_ids)
+                    # print(rec.arrival_date,room_cost_id.date_from)
                     if rec.arrival_date >= room_cost_id.date_from and rec.departure_date <= room_cost_id.date_to:
-                        print(rec.arrival_date, "arrival_date",rec.departure_date,'departure_date')
+                        # print(rec.arrival_date, "arrival_date",rec.departure_date,'departure_date')
                         for price_id in room_cost_id.price_ids:
-                            print(price_id.guest_price, "Price Guest")
+                            # print(price_id.guest_price, "Price Guest")
                             if rec.person_per_room == price_id.person_per_room:
-                                print(price_id.guest_price,"Price Guest ############")
+                                # print(price_id.guest_price,"Price Guest ############")
                                 nights_price = price_id.guest_price * rec.nights_quantity
                                 # rec.update({'nights_price':price_id.guest_price})
-                                print(rec.nights_quantity,"=====")
+                                # print(rec.nights_quantity,"=====")
                     elif rec.arrival_date >= room_cost_id.date_from and rec.arrival_date <= room_cost_id.date_to:
-                        print(rec.arrival_date,"arr",room_cost_id.date_from,room_cost_id.date_to)
+                        # print(rec.arrival_date,"arr",room_cost_id.date_from,room_cost_id.date_to)
                         nights = room_cost_id.date_to - rec.arrival_date + relativedelta(days=1)
-                        print(nights.days,"Nights Nights")
+                        # print(nights.days,"Nights Nights")
                         for price_id in room_cost_id.price_ids:
-                            print(price_id.guest_price, "Price Guest")
+                            # print(price_id.guest_price, "Price Guest")
                             if rec.person_per_room == price_id.person_per_room:
-                                print(price_id.guest_price,"Price Guest arrive ############")
+                                # print(price_id.guest_price,"Price Guest arrive ############")
                                 arrival_price = price_id.guest_price * nights.days
-                                print(arrival_price,"arrival_price ")
+                                # print(arrival_price,"arrival_price ")
                                 # rec.update({'nights_price':price_id.guest_price})
                     elif rec.departure_date >= room_cost_id.date_from  and rec.departure_date <= room_cost_id.date_to:
-                        print(rec.departure_date,"arr",room_cost_id.date_from,room_cost_id.date_to)
+                        # print(rec.departure_date,"arr",room_cost_id.date_from,room_cost_id.date_to)
                         nights = rec.departure_date - room_cost_id.date_from
                         for price_id in room_cost_id.price_ids:
-                            print(price_id.guest_price, "Price Guest depar")
+                            # print(price_id.guest_price, "Price Guest depar")
                             if rec.person_per_room == price_id.person_per_room:
-                                print(price_id.guest_price,nights.days,"Price Guest depart ############")
+                                # print(price_id.guest_price,nights.days,"Price Guest depart ############")
                                 departure_price = price_id.guest_price * nights.days
-                                print(departure_price,"departure Price")
+                                # print(departure_price,"departure Price")
             nights_price += (departure_price + arrival_price)
             rec.update({'nights_price': nights_price, 'avr_price': nights_price/rec.nights_quantity})
 
@@ -135,14 +135,14 @@ class SplitRoom(models.Model):
     def cancel_reservation_calendar(self):
         room_cal_obj = self.env['hotel.room.capacity']
         for reservation_nights in range(0, self.nights_quantity):
-            print(reservation_nights,"Night#")
+            # print(reservation_nights,"Night#")
             day_date = self.arrival_date + timedelta(days=reservation_nights)
-            print(day_date)
+            # print(day_date)
             room_cal_id = room_cal_obj.search(
                 [('hotel_id', '=', self.hotel_id.id), ('room_type_id', '=', self.room_type.id),
                  ('date_day', '=', day_date)])
             if room_cal_id:
-                print(room_cal_id, "==========================")
+                # print(room_cal_id, "==========================")
                 reserved_room = room_cal_id.reserved_room - 1
                 room_cal_id.reserved_room = reserved_room
 
@@ -151,11 +151,11 @@ class SplitRoom(models.Model):
         room_cal_obj = self.env['hotel.room.capacity']
         for reservation_nights in range(0, self.nights_quantity):
             day_date = self.arrival_date + timedelta(days=reservation_nights)
-            print(day_date)
+            # print(day_date)
             room_cal_id = room_cal_obj.search(
                 [('hotel_id', '=', self.hotel_id.id), ('room_type_id', '=', self.room_type.id),
                  ('date_day', '=', day_date)])
-            print(room_cal_id, "==========================")
+            # print(room_cal_id, "==========================")
             if room_cal_id:
                 reserved_room = self.room_quantity + room_cal_id.reserved_room
                 if reserved_room > room_cal_id.total_rooms:

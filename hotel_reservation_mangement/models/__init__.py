@@ -4,6 +4,7 @@
 from . import hotel
 from . import hotel_room
 from . import room_list
+from . import children_room_list
 from . import hotel_reservation
 from . import period_lead_management
 from . import room_cost_attripute

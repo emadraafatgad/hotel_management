@@ -8,11 +8,10 @@ class ReservationInvoice(models.Model):
     room_type = fields.Many2one('hotel.room.type', domain="[('hotel_id','=',hotel_id)]")
     meal_plan = fields.Selection([
         ('Soft Al Inclusive', 'Soft Al Inclusive'),
-        ('Al Inclusive', 'Al Inclusive'),
         ('Half Board (HB)', 'Half Board (HB)'),
         ('Full Board (FB)', 'Full Board (FB)'),
-        ('Board (B)', 'Board (B)'),
-    ])
+
+    ], required=True, tracking=True)
     arrival_date = fields.Date(string="Check In")
     nights_quantity = fields.Integer(string="Nights #")
     departure_date = fields.Date(string="Check Out")

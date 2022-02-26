@@ -69,6 +69,18 @@
                                         <field name="person_per_room"/>
                                         <field name="hotel_cost"/>
                                         <field name="guest_price"/>
+                                        <field name="hotel_profit" widget="monetary"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Children">
+                                <field name="children_price_ids">
+                                    <tree string="Children" editable="bottom">
+                                        <field name="child_sequence"/>
+                                        <field name="age"/>
+                                        <field name="hotel_cost"/>
+                                        <field name="guest_price"/>
+                                        <field name="hotel_profit" widget="monetary"/>
                                     </tree>
                                 </field>
                             </page>
@@ -79,6 +91,12 @@
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -95,6 +113,15 @@
             <field name="context">{}</field>
         </record>
 
+        <record id="hotel_room_cost_per_children_action_tree" model="ir.actions.act_window">
+            <field name="name">Cost Per Person</field>
+            <field name="res_model">cost.per.children</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
         <record model="ir.ui.view" id="room_cost_per_person_tree">
             <field name="name">Cost Per Person</field>
             <field name="model">cost.per.person</field>
@@ -104,6 +131,7 @@
                         <field name="person_per_room"/>
                         <field name="hotel_cost"/>
                         <field name="guest_price"/>
+                        <field name="hotel_profit"/>
                     </tree>
                 </field>
         </record>
@@ -120,6 +148,7 @@
                                 <field name="person_per_room"/>
                                 <field name="hotel_cost"/>
                                 <field name="guest_price"/>
+                                <field name="hotel_profit"/>
                                 <field name="room_type_id"/>
                             </group>
                         </group>

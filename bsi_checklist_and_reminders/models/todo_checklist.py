@@ -45,7 +45,7 @@ class TodoChecklistLine(models.Model):
 
 class TodoChecklist(models.Model):
     _name = 'todo.checklist'
-    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'rating.parent.mixin']
     _description = 'Todo Checklist'
 
     name = fields.Char(string="Name", track_visibility='always')

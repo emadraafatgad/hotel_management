@@ -10,11 +10,11 @@ class RoomCostAttribute(models.Model):
 
     hotel_id = fields.Many2one('hotel.management', required=True)
     room_type_id = fields.Many2one('hotel.room.type', required=True, domain="[('hotel_id','=',hotel_id)]")
-    ordered_by = fields.Many2one('res.partner', required=True, string='Partner')
+    ordered_by = fields.Many2one('res.partner', string='Partner')
     rate_supplier = fields.Many2one('res.partner', required=True)
-    date_from = fields.Date( required=True)
+    date_from = fields.Date(required=True)
     period_lead_id = fields.Many2one('date.range', string='Period', )
-    date_to = fields.Date( required=True)
+    date_to = fields.Date(required=True)
     note = fields.Char()
     price_ids = fields.One2many('cost.per.person', 'room_type_id', required=True)
     # remove this only for db
@@ -36,6 +36,21 @@ class RoomCostAttribute(models.Model):
             if rec.date_from and rec.date_to:
                 if rec.date_from > rec.date_to:
                     raise ValidationError(_('date from must be less than date to'))
+
+    @api.constrains('date_to', 'date_from')
+    def condition_on_date_all_conditions(self):
+        for rec in self:
+            if rec.date_from and rec.date_to:
+                all_room_cost = self.env['room.cost.attribute'].search(
+                    [('hotel_id', '=', rec.hotel_id.id), ('room_type_id', '=', rec.room_type_id.id),
+                     ('rate_supplier', '=', rec.rate_supplier.id),
+                     ('meal_plan', '=', rec.meal_plan),
+                     '|', '&', ('date_from', '<=', rec.date_from), ('date_to', '>=', rec.date_from),
+                     '&', ('date_from', '<=', rec.date_to), ('date_from', '<=', rec.date_to), ])
+                raise ValidationError(all_room_cost)
+                for room in all_room_cost:
+                    if rec.date_from > rec.date_to:
+                        raise ValidationError(_('date from must be less than date to'))
 
     @api.onchange('period_lead_id')
     def get_period_lead_dates(self):

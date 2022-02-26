@@ -37,8 +37,8 @@ class HotelManagement(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['supplier'] = True
-        vals['is_hotel'] = True
+        # vals['supplier'] = True
+        # vals['is_hotel'] = True
         health_patient = super(HotelManagement, self).create(vals)
         return health_patient
 

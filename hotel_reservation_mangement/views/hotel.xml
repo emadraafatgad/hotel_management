@@ -31,8 +31,8 @@
                     <form>
                         <sheet>
                             <div class="oe_title">
-                                <field name="type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"/>
-                                <h1><field name="name" default_focus="1" string="Name" placeholder="Hotel Name"/></h1>
+                                <field name="type" options="{'horizontal': true}" class="oe_edit_only"  widget="radio"/>
+                                <h1><field name="name" default_focus="1" required="True" string="Name" placeholder="Hotel Name"/></h1>
                                 <field name="hotel_parent"
                                        placeholder="Company"
                                        attrs="{'invisible':[('type','!=','company')]}"/>

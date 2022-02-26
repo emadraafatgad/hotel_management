@@ -3,8 +3,6 @@ from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 
-
-
 class HotelRoom(models.Model):
     _name = 'hotel.room.view'
 
@@ -17,7 +15,7 @@ class HotelRoomType(models.Model):
     name = fields.Char()
     hotel_id = fields.Many2one('hotel.management')
     view_type = fields.Many2one('hotel.room.view')
-    total_rooms = fields.Integer(required=True)
+    total_rooms = fields.Integer(required=True, string="Contracted")
 
     # @api.multi
     # @api.depends('name', 'hotel_id')
@@ -42,7 +40,7 @@ class HotelRoomType(models.Model):
 
     ])
     room_aperture = fields.Selection([
-        ('Balcony','Balcony'),
+        ('Balcony', 'Balcony'),
         ('Balcony/Terrace', 'Balcony/Terrace'),
         ('French Balcony', 'French Balcony'),
         ('Run of the House', 'Run of the House'),
@@ -55,7 +53,7 @@ class HotelRoomType(models.Model):
     maximum_adults = fields.Integer()
     minimum_adults = fields.Integer()
     maximum_children = fields.Integer()
-    minimum_children =fields.Integer()
+    minimum_children = fields.Integer()
     maximum_persons = fields.Integer()
 
 

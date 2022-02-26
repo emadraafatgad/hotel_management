@@ -63,6 +63,7 @@
                     <field name="name"></field>
                     <field name="view_type"/>
                     <field name="room_aperture"/>
+                    <field name="total_rooms"/>
                     <field name="hotel_id"/>
                 </tree>
             </field>

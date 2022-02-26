@@ -37,7 +37,7 @@ class RoomCostAttribute(models.Model):
                 if rec.date_from > rec.date_to:
                     raise ValidationError(_('date from must be less than date to'))
 
-    @api.constrains('date_to', 'date_from')
+    @api.constrains('date_to', 'date_from','rate_supplier','meal_plan','hotel_id','room_type_id')
     def condition_on_date_all_conditions(self):
         for rec in self:
             if rec.date_from and rec.date_to:

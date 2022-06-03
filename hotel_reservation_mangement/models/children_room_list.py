@@ -54,7 +54,7 @@ class SplitRoom(models.Model):
                 nights_q = (departure_date - arrival_date).days
                 date.update({'nights_quantity': nights_q})
 
-    @api.onchange('room_type', 'child_sequence', 'meal_plan', 'nights_quantity', 'room_quantity')
+    @api.onchange('room_type', 'child_sequence', 'meal_plan', 'nights_quantity','age', 'room_quantity')
     def calc_room_price_for_total_guests(self):
         print("i am in cal function")
         for rec in self:
@@ -62,7 +62,7 @@ class SplitRoom(models.Model):
             departure_price = 0
             nights_price = 0
             print(rec.hotel_id, rec.child_sequence, rec.meal_plan, rec.room_type)
-            if rec.hotel_id and rec.child_sequence and rec.meal_plan and rec.room_type:
+            if rec.hotel_id and rec.child_sequence and rec.meal_plan and rec.room_type and rec.age:
                 room_cost_ids = rec.env['room.cost.attribute'].search([
                     ('hotel_id', '=', rec.hotel_id.id),
                     ('room_type_id', '=', rec.room_type.id),
@@ -74,14 +74,13 @@ class SplitRoom(models.Model):
                     print(rec.arrival_date, room_cost_id.date_from)
                     if rec.arrival_date >= room_cost_id.date_from and rec.departure_date <= room_cost_id.date_to:
                         print(rec.arrival_date, "arrival_date", rec.departure_date, 'departure_date')
-                        cost_per_children = self.env['cos.per.children'].search(
-                            [('child_sequence', '=', rec.child_sequence), ('age', '>=', rec.age),
-                             ('age', '<', rec.age_to), ('room_type_id', '=', room_cost_id.id)])
+                        cost_per_children = self.env['cost.per.children'].search(
+                            [('child_sequence', '=', rec.child_sequence), ('age', '<=', rec.age),
+                             ('age_to', '>', rec.age), ('room_type_id', '=', room_cost_id.id)])
                         if cost_per_children:
                             nights_price = cost_per_children.guest_price * rec.nights_quantity
                         else:
-                            raise ValidationError(
-                                _("There is no Plan for {} for age {}".format(rec.child_sequencerec.age )))
+                            raise ValidationError(_("There is no Plan for {} for age {}".format(rec.child_sequence,rec.age )))
                         # for price_id in room_cost_id.children_price_ids:
                         #     print(price_id.guest_price, "Price Guest")
                         #     if rec.child_sequence == price_id.child_sequence:
@@ -93,14 +92,14 @@ class SplitRoom(models.Model):
                         print(rec.arrival_date, "arr", room_cost_id.date_from, room_cost_id.date_to)
                         nights = room_cost_id.date_to - rec.arrival_date + relativedelta(days=1)
                         print(nights.days, "Nights Nights")
-                        cost_per_children = self.env['cos.per.children'].search(
-                            [('child_sequence', '=', rec.child_sequence), ('age', '>=', rec.age),
-                             ('age', '<', rec.age_to), ('room_type_id', '=', room_cost_id.id)])
+                        cost_per_children = self.env['cost.per.children'].search(
+                            [('child_sequence', '=', rec.child_sequence), ('age', '<=', rec.age),
+                             ('age_to', '>', rec.age), ('room_type_id', '=', room_cost_id.id)])
                         if cost_per_children:
                             nights_price = cost_per_children.guest_price * rec.nights_quantity
                         else:
                             raise ValidationError(
-                                _("There is no Plan for {} for age {}".format(rec.child_sequencerec.age)))
+                                _("There is no Plan for {} for age {}".format(rec.child_sequence,rec.age)))
                         # for price_id in room_cost_id.children_price_ids:
                         #     print(price_id.guest_price, "Price Guest")
                         #     if rec.child_sequence == price_id.child_sequence:
@@ -111,14 +110,14 @@ class SplitRoom(models.Model):
                     elif rec.departure_date >= room_cost_id.date_from and rec.departure_date <= room_cost_id.date_to:
                         print(rec.departure_date, "arr", room_cost_id.date_from, room_cost_id.date_to)
                         nights = rec.departure_date - room_cost_id.date_from
-                        cost_per_children = self.env['cos.per.children'].search(
-                            [('child_sequence', '=', rec.child_sequence), ('age', '>=', rec.age),
-                             ('age', '<', rec.age_to), ('room_type_id', '=', room_cost_id.id)])
+                        cost_per_children = self.env['cost.per.children'].search(
+                            [('child_sequence', '=', rec.child_sequence), ('age', '<=', rec.age),
+                             ('age_to', '>', rec.age), ('room_type_id', '=', room_cost_id.id)])
                         if cost_per_children:
                             nights_price = cost_per_children.guest_price * rec.nights_quantity
                         else:
                             raise ValidationError(
-                                _("There is no Plan for {} for age {}".format(rec.child_sequencerec.age)))
+                                _("There is no Plan for {} for age {}".format(rec.child_sequence,rec.age)))
                         # for price_id in room_cost_id.children_price_ids:
                         #     print(price_id.guest_price, "Price Guest depar")
                         #     if rec.child_sequence == price_id.child_sequence:

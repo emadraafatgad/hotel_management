@@ -136,7 +136,7 @@
                                 <field name="children_room_ids" attrs="{'readonly': [('state','in',['Confirmed','To Invoice','Invoiced','Canceled'])]}" context="{'default_hotel_id':hotel_id,'default_meal_plan':meal_plan,'default_room_type':room_type,'default_arrival_date':arrival_date,'default_departure_date':departure_date}">
                                     <tree string="Room" editable="bottom" >
                                         <field name="child_sequence"/>
-                                        <field name="room_name"/>
+                                        <field name="age"/>
                                         <field name="name"/>
                                         <field name="hotel_id" invisible="1"/>
                                         <field name="room_type" />

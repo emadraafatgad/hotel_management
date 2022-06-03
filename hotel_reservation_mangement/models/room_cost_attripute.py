@@ -105,7 +105,8 @@ class CostPerChildren(models.Model):
     #     ('5', '5 Persons')], required=True, string="Occupancy", default='1', tracking=True)
     child_sequence = fields.Selection([('first_child', 'First Child Below'), ('second_child', 'Second Child Below'),
                                        ('third_child', 'Third Child Below')],required=True, tracking=True)
-    age = fields.Float(required=True, tracking=True)
+    age = fields.Float(required=True, string="Age From", tracking=True)
+    age_to = fields.Float(required=True,string="Age To", tracking=True)
     hotel_cost = fields.Monetary("Room Cost", required=True, currency_field='currency_id', tracking=True)
     hotel_profit = fields.Monetary('Profit', compute='calc_profit_from_hotel', currency_field='currency_id', store=True,
                                    )
@@ -115,11 +116,12 @@ class CostPerChildren(models.Model):
                                   default=lambda self: self.env.user.company_id.currency_id)
     room_type_id = fields.Many2one('room.cost.attribute')
 
-    @api.constrains('hotel_cost', 'guest_price')
-    def money_constrains(self):
-        for rec in self:
-            if rec.hotel_cost == 0 or rec.guest_price == 0:
-                raise ValidationError('Hotel Cost and Guest price Must Be greater than zero')
+    # @api.constrains('hotel_cost', 'guest_price')
+    # def money_constrains(self):
+    #     for rec in self:
+    #
+    #         if rec.hotel_cost == 0 or rec.guest_price == 0:
+    #             raise ValidationError('Hotel Cost and Guest price Must Be greater than zero')
 
     @api.depends('guest_price', 'hotel_cost')
     def calc_profit_from_hotel(self):

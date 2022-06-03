@@ -78,6 +78,7 @@
                                     <tree string="Children" editable="bottom">
                                         <field name="child_sequence"/>
                                         <field name="age"/>
+                                        <field name="age_to"/>
                                         <field name="hotel_cost"/>
                                         <field name="guest_price"/>
                                         <field name="hotel_profit" widget="monetary"/>

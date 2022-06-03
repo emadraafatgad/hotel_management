@@ -5,7 +5,7 @@ class OpportunityReservation(models.Model):
     _inherit = 'crm.lead'
 
     order_from =fields.Char(string="Guest Name",required=False)
-    reservation_id = fields.Many2one('hotel.reservation.management',readonly=True)
+    reservation_id = fields.Many2one('hotel.reservation.management',readonly=False)
 
     def opportunity_reservation_form(self):
         self.ensure_one()

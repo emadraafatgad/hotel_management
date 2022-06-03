@@ -25,7 +25,7 @@
         'views/hotel_reservation.xml',
         'views/period_lead_management.xml',
         'views/room_cost_attripute.xml',
-        # 'views/opportunity_reservation.xml',
+        'views/opportunity_reservation.xml',
         'views/reservation_invoice.xml',
         'views/room_capacity.xml',
         'views/sh_message_wizard.xml',
